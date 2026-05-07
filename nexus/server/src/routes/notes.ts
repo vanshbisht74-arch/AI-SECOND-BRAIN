@@ -1,11 +1,13 @@
 import { Router } from 'express';
-import { PrismaClient } from '@prisma/client';
+import prisma from '../lib/prisma.js';
 
 const router = Router();
-const prisma = new PrismaClient();
 
+// Get all notes for a user
 router.get('/', async (req, res) => {
   const { userId } = req.query;
+  if (!userId) return res.status(400).json({ error: 'userId is required' });
+
   const notes = await prisma.note.findMany({
     where: { userId: String(userId) },
     orderBy: { updatedAt: 'desc' }
@@ -13,11 +15,19 @@ router.get('/', async (req, res) => {
   res.json(notes);
 });
 
+// Create a new note
 router.post('/', async (req, res) => {
   const { title, content, userId, folder, tags } = req.body;
+
   try {
     const note = await prisma.note.create({
-      data: { title, content, userId, folder, tags: tags || [] }
+      data: {
+        title,
+        content,
+        userId,
+        folder,
+        tags: tags || [],
+      }
     });
     res.status(201).json(note);
   } catch (error) {

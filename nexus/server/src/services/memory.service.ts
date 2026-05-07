@@ -1,22 +1,25 @@
-import { PrismaClient } from '@prisma/client';
+import prisma from '../lib/prisma.js';
 import { AIService } from './ai.service.js';
-
-const prisma = new PrismaClient();
 
 export class MemoryService {
   static async retrieveContext(query: string, userId: string) {
-    const relatedNotes = await prisma.note.findMany({
-      where: {
-        userId,
-        OR: [
-          { title: { contains: query, mode: 'insensitive' } },
-          { content: { contains: query, mode: 'insensitive' } },
-        ]
-      },
-      take: 5
-    });
+    try {
+      const relatedNotes = await prisma.note.findMany({
+        where: {
+          userId,
+          OR: [
+            { title: { contains: query, mode: 'insensitive' } },
+            { content: { contains: query, mode: 'insensitive' } },
+          ]
+        },
+        take: 5
+      });
 
-    return relatedNotes.map(n => `Note: ${n.title}\nContent: ${n.content}`).join('\n---\n');
+      return relatedNotes.map(n => `Note: ${n.title}\nContent: ${n.content}`).join('\n---\n');
+    } catch (error) {
+      console.warn('Memory retrieval failed (likely database not configured):', error);
+      return '';
+    }
   }
 
   static async saveMemory(content: string, userId: string) {
