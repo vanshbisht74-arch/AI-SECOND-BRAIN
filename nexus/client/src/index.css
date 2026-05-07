@@ -1,0 +1,32 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background-light: #FDFDFD;
+  --color-background-dark: #0A0A0B;
+  --color-surface-light: #FFFFFF;
+  --color-surface-dark: #141415;
+
+  --color-nexus-50: #F4F4FF;
+  --color-nexus-100: #E9E9FF;
+  --color-nexus-200: #D2D2FF;
+  --color-nexus-300: #B6B6FF;
+  --color-nexus-400: #8C8CFF;
+  --color-nexus-500: #6366F1;
+  --color-nexus-600: #4F46E5;
+  --color-nexus-700: #4338CA;
+  --color-nexus-800: #3730A3;
+  --color-nexus-900: #312E81;
+  --color-nexus-950: #1E1B4B;
+}
+
+@layer base {
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+  .preserve-3d {
+    transform-style: preserve-3d;
+  }
+  .backface-hidden {
+    backface-visibility: hidden;
+  }
+}
