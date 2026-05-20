@@ -47,11 +47,11 @@ export class AIService {
   }
 
   static async generateEmbedding(text: string) {
-    if (!process.env.OPENAI_API_KEY) return new Array(1536).fill(0);
+    if (apiKey === 'sk-dummy-key') return new Array(1536).fill(0);
 
     try {
       const response = await openai.embeddings.create({
-        model: "text-embedding-3-small",
+        model: isOpenRouter ? "openai/text-embedding-3-small" : "text-embedding-3-small",
         input: text,
       });
       return response.data[0].embedding;
