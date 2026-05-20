@@ -10,7 +10,7 @@ NEXUS is a premium, production-ready personal knowledge operating system designe
 
 ### 2. Backend Setup
 1. Navigate to the server directory:
-   ```bash
+   ```bash  
    cd nexus/server
    ```
 2. Install dependencies:
