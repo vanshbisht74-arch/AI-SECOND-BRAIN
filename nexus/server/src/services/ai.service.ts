@@ -3,21 +3,28 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const apiKey = process.env.OPENAI_API_KEY || 'sk-dummy-key';
+const apiKey = process.env.OPENAI_API_KEY || process.env.OPENROUTER_API_KEY || 'sk-dummy-key';
+
+const isOpenRouter = apiKey.startsWith('sk-or-');
 
 const openai = new OpenAI({
   apiKey: apiKey,
+  baseURL: isOpenRouter ? "https://openrouter.ai/api/v1" : undefined,
+  defaultHeaders: isOpenRouter ? {
+    "HTTP-Referer": "https://nexus.ai",
+    "X-Title": "NEXUS",
+  } : undefined,
 });
 
 export class AIService {
   static async generateResponse(prompt: string, context?: string) {
-    if (!process.env.OPENAI_API_KEY) {
+    if (apiKey === 'sk-dummy-key') {
       return "AI functionality is currently in demo mode. Please provide an API key to enable full intelligence.";
     }
 
     try {
       const response = await openai.chat.completions.create({
-        model: "gpt-4-turbo-preview",
+        model: isOpenRouter ? "google/gemini-2.0-flash-001" : "gpt-4-turbo-preview",
         messages: [
           {
             role: "system",
