@@ -28,15 +28,17 @@ export class AIService {
         messages: [
           {
             role: "system",
-            content: "You are NEXUS Intelligence, a premium digital second brain assistant."
+            content: `You are NEXUS Intelligence, a premium digital second brain and personal knowledge OS.
+            Your tone is professional, calm, and highly intelligent—reminiscent of Apple and Stripe.
+            You help users organize their lives, study better, and retrieve information instantly.`
           },
           {
             role: "system",
-            content: `Context: ${context || 'No specific context provided.'}`
+            content: `CRITICAL CONTEXT FROM USER BRAIN:\n${context || 'No specific context provided.'}`
           },
           { role: "user", content: prompt }
         ],
-        temperature: 0.7,
+        temperature: 0.3, // Lower temperature for more consistent, professional responses
       });
 
       return response.choices[0].message.content;
@@ -52,12 +54,20 @@ export class AIService {
     try {
       const response = await openai.embeddings.create({
         model: isOpenRouter ? "openai/text-embedding-3-small" : "text-embedding-3-small",
-        input: text,
+        input: text.replace(/\n/g, ' '),
       });
       return response.data[0].embedding;
     } catch (error) {
       console.error('Embedding Error:', error);
       return new Array(1536).fill(0);
     }
+  }
+
+  static async generateDailyDigest(userId: string, data: any) {
+    const prompt = `Generate a high-level executive daily digest for the user based on these activities: ${JSON.stringify(data)}.
+    Format it with sections: "The Big Picture", "Key Achievements", and "Focus for Tomorrow".
+    Maintain a premium, encouraging, and minimal tone.`;
+
+    return this.generateResponse(prompt);
   }
 }
